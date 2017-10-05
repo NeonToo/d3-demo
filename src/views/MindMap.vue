@@ -51,7 +51,7 @@
 
                 root.descendants().forEach(function (node) {
                     node.data.closed = ("true" == node.data.closed);
-                    node.data.closed && that.i(node);
+                    node.data.closed && that.toggle(node);
                 });
 //                gmap.empty() && (gmap = svg.append("g").attr("class", "gmap"));
                 if (gmap.empty()) {
@@ -68,6 +68,9 @@
                 const zoom = d3.zoom().scaleExtent([.7, 2])
                     .translateExtent([[-.7 * that.svgWidth, -.7 * that.svgHeight], [1.7 * that.svgWidth, 1.7 * that.svgHeight]])
                     .on("zoom", function () {
+//                        console.log(d3.event.transform);
+//                        console.log(d3.event.translate);
+//                        console.log(d3.event.scale);
                         const t = "scale(" + d3.event.transform.k + ")",
                             e = "translate(" + d3.event.transform.x + "," + d3.event.transform.y + ")";
                         gmap.attr("transform", e + t);
@@ -78,17 +81,16 @@
                 this.tree = tree;
                 this.root = root;
             },
-            i(node) {
-                if (node.children) {
-                    node._children = node.children;
+            toggle(node) { // 'node' is the clicked one
+                if (node.children) { // if has children
+                    node._children = node.children; // save its children before clean
                     node.children = null;
                     node.data.closed = true;
                 } else {
-                    node.children = node._children;
+                    node.children = node._children; // reset its children
                     node._children = null;
                     node.data.closed = false;
                 }
-//                node.children ? (node._children = node.children, node.children = null, node.data.closed = !0) : (node.children = node._children, node._children = null, node.data.closed = !1)
             },
             a(array) {
                 const that = this;
@@ -118,7 +120,7 @@
                     f = enter.append("g").attr("class", "node").attr("transform", function () {
                         return "translate(" + array[0] + "," + array[1] + ")";
                     }).on("mousedown", function (d) {
-                        d3.event.defaultPrevented || (that.i(d), that.a(d.prevPos));
+                        d3.event.defaultPrevented || (that.toggle(d), that.a(d.prevPos));
                     }).on("mouseover", function () {
 //                        d3.select(this).style("cursor", "pointer").select("text").style("fill-opacity", 1);
                     }).on("mouseout", function () {
