@@ -10,7 +10,7 @@
     export default {
         data() {
             return {
-                svgHeight: 1000,
+                svgHeight: 1300,
                 svgWidth: 1300,
                 mapData: {},
                 svg: null,
